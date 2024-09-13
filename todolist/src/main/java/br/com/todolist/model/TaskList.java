@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "task_list")
@@ -11,7 +12,7 @@ public class TaskList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private Long id;
+    private UUID id;
 
     private String title;
 
@@ -56,11 +57,11 @@ public class TaskList {
         this.creationDate = creationDate;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
