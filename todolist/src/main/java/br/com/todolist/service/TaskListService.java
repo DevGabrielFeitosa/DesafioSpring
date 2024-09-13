@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class TaskListService {
@@ -24,7 +25,7 @@ public class TaskListService {
         return taskListRepository.findAllByOrderByCreationDateDesc();
     }
 
-    public List<TaskList> deleteList(Long id){
+    public List<TaskList> deleteList(UUID id){
         taskListRepository.deleteById(id);
         return findAll();
     }
