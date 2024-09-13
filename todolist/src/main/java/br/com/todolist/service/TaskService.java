@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class TaskService {
@@ -23,11 +24,10 @@ public class TaskService {
     }
 
     public List<Task> findAllWithOrder(String order){
-        Sort sort = Sort.by(Sort.Order.asc(order));
-        return taskRepository.findAllWithOrder(sort);
+        return taskRepository.findAll(Sort.by(Sort.Order.asc(order)));
     }
 
-    public List<Task> deleteTask(Long id){
+    public List<Task> deleteTask(UUID id){
         taskRepository.deleteById(id);
         return findAll();
     }
