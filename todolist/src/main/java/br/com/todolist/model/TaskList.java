@@ -3,10 +3,11 @@ package br.com.todolist.model;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.Set;
 
 @Entity
-@Table(name = "lists")
-public class List {
+@Table(name = "task_list")
+public class TaskList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -19,6 +20,9 @@ public class List {
     private String priority;
 
     private Date creationDate;
+
+    @OneToMany(mappedBy = "taskList", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Task> tasks;
 
     public String getTitle() {
         return title;
@@ -58,5 +62,13 @@ public class List {
 
     public Long getId() {
         return id;
+    }
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
     }
 }

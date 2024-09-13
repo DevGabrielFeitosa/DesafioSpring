@@ -19,6 +19,10 @@ public class Task {
 
     private String status;
 
+    @ManyToOne
+    @JoinColumn(name = "task_list_id")
+    private TaskList taskList;
+
     public String getDescription() {
         return description;
     }
@@ -57,5 +61,13 @@ public class Task {
 
     public Long getId() {
         return id;
+    }
+
+    public TaskList getTaskList() {
+        return taskList;
+    }
+
+    public void setTaskList(TaskList taskList) {
+        this.taskList = taskList;
     }
 }
