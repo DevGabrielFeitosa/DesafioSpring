@@ -1,12 +1,12 @@
 package br.com.todolist.controller;
 
 import br.com.todolist.model.Task;
-import br.com.todolist.repository.TaskRepository;
 import br.com.todolist.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/task")
@@ -35,7 +35,7 @@ public class TaskController {
     }
 
     @DeleteMapping("{id}")
-    List<Task> create(@PathVariable("id") Long id){
+    List<Task> create(@PathVariable("id") UUID id){
         return taskService.deleteTask(id);
     }
 }

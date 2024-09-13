@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/taskList")
@@ -29,7 +30,7 @@ public class TaskListController {
     }
 
     @DeleteMapping("{id}")
-    List<TaskList> delete(@PathVariable("id") Long id){
+    List<TaskList> delete(@PathVariable("id") UUID id){
         return taskListService.deleteList(id);
     }
 }
