@@ -2,10 +2,9 @@ package br.com.todolist.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -30,7 +29,7 @@ public class TaskListModel {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date creationDate;
 
-    @OneToMany(mappedBy = "taskList", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "taskListModel", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TaskModel> taskModels;
 
     public String getTitle() {
