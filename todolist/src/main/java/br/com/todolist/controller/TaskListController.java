@@ -5,6 +5,7 @@ import br.com.todolist.service.TaskListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ public class TaskListController {
     private TaskListService taskListService;
 
     @PostMapping
-    List<TaskListModel> create(@RequestBody TaskListModel taskListModel){
+    List<TaskListModel> create(@RequestBody @Valid TaskListModel taskListModel){
         return taskListService.createList(taskListModel);
     }
 
@@ -25,7 +26,7 @@ public class TaskListController {
     }
 
     @PutMapping
-    List<TaskListModel> update(@RequestBody TaskListModel taskListModel){
+    List<TaskListModel> update(@RequestBody @Valid TaskListModel taskListModel){
         return taskListService.updateList(taskListModel);
     }
 

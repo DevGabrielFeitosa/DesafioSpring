@@ -3,6 +3,9 @@ package br.com.todolist.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -15,8 +18,11 @@ public class TaskListModel {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @NotBlank(message = "Título não deve ser vazio.")
+    @Size(min = 10, message = "Título não deve possuir menos que 10 caracteres.")
     private String title;
 
+    @Size(max = 60, message = "Descrição não deve passar de 60 caracteres.")
     private String description;
 
     private String priority;
