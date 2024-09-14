@@ -7,6 +7,7 @@ import br.com.todolist.model.TaskModel;
 import br.com.todolist.repository.TaskRepository;
 import br.com.todolist.service.TaskListService;
 import br.com.todolist.service.TaskService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,12 +20,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -46,8 +51,12 @@ public class TaskServiceTest {
 
     private UUID validTaskListId;
 
+    private ObjectMapper objectMapper;
+
     @BeforeEach
     public void setUp() throws ParseException {
+        objectMapper = new ObjectMapper();
+
         validTaskListId = UUID.randomUUID();
         TaskListModel taskListModel = new TaskListModel();
 
@@ -205,4 +214,56 @@ public class TaskServiceTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].description").value("Task 1"));
     }
+
+    @Test
+    public void testUpdateTask() throws Exception {
+        UUID taskId = UUID.randomUUID();
+        UUID taskListId = UUID.randomUUID();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date creationDate = sdf.parse("2024-09-14 15:30:03");
+
+        TaskModel initialTaskModel = new TaskModel();
+        initialTaskModel.setId(taskId);
+        initialTaskModel.setDescription("Initial description");
+        initialTaskModel.setPriority("Medium");
+        initialTaskModel.setCreationDate(creationDate);
+        initialTaskModel.setStatus("Pending");
+
+        TaskListModel taskListModel = new TaskListModel();
+        taskListModel.setId(taskListId);
+
+        // Simulação do serviço para retornar um TaskListModel válido
+        when(taskListService.findById(taskListId)).thenReturn(taskListModel);
+
+        TaskModel updatedTaskModel = new TaskModel();
+        updatedTaskModel.setId(taskId);
+        updatedTaskModel.setDescription("Updated description");
+        updatedTaskModel.setPriority("High");
+        updatedTaskModel.setCreationDate(creationDate);
+        updatedTaskModel.setStatus("In Progress");
+        updatedTaskModel.setTaskList(taskListModel);
+
+        TaskDTO updatedTaskDTO = new TaskDTO();
+        updatedTaskDTO.setId(updatedTaskModel.getId());
+        updatedTaskDTO.setDescription(updatedTaskModel.getDescription());
+        updatedTaskDTO.setPriority(updatedTaskModel.getPriority());
+        updatedTaskDTO.setCreationDate(updatedTaskModel.getCreationDate());
+        updatedTaskDTO.setStatus(updatedTaskModel.getStatus());
+
+        when(taskService.updateTask(any(TaskModel.class))).thenReturn(Collections.singletonList(updatedTaskDTO));
+
+        mockMvc.perform(put("/task")
+                        .param("taskListId", taskListId.toString())
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatedTaskModel)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(updatedTaskDTO.getId().toString()))
+                .andExpect(jsonPath("$[0].description").value(updatedTaskDTO.getDescription()))
+                .andExpect(jsonPath("$[0].priority").value(updatedTaskDTO.getPriority()))
+                .andExpect(jsonPath("$[0].creationDate").value(sdf.format(updatedTaskDTO.getCreationDate())))
+                .andExpect(jsonPath("$[0].status").value(updatedTaskDTO.getStatus()))
+                .andDo(print());
+    }
 }
+
