@@ -1,5 +1,6 @@
 package br.com.todolist.controller;
 
+import br.com.todolist.DTO.TaskDTO;
 import br.com.todolist.model.TaskListModel;
 import br.com.todolist.model.TaskModel;
 import br.com.todolist.service.TaskListService;
@@ -21,7 +22,7 @@ public class TaskController {
     private TaskListService taskListService;
 
     @PostMapping
-    List<TaskModel> create(@Valid @RequestBody TaskModel taskModel, @RequestParam UUID taskListId){
+    List<TaskDTO> create(@Valid @RequestBody TaskModel taskModel, @RequestParam UUID taskListId){
         TaskListModel taskListModel = taskListService.findById(taskListId);
 
         taskModel.setTaskList(taskListModel);
@@ -30,22 +31,22 @@ public class TaskController {
     }
 
     @GetMapping("/list")
-    List<TaskModel> list(){
+    List<TaskDTO> list(){
         return taskService.findAll();
     }
 
     @GetMapping("/list/orderedList")
-    List<TaskModel> listWithOrder(@RequestParam("order") String order){
+    List<TaskDTO> listWithOrder(@RequestParam("order") String order){
         return taskService.findAllWithOrder(order);
     }
 
     @PutMapping
-    List<TaskModel> update(@Valid @RequestBody TaskModel taskModel){
+    List<TaskDTO> update(@Valid @RequestBody TaskModel taskModel){
         return taskService.updateTask(taskModel);
     }
 
     @DeleteMapping("{id}")
-    List<TaskModel> delete(@PathVariable("id") UUID id){
+    List<TaskDTO> delete(@PathVariable("id") UUID id){
         return taskService.deleteTask(id);
     }
 }
