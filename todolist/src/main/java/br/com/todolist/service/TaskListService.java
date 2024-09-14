@@ -36,9 +36,9 @@ public class TaskListService {
         return findAll();
     }
 
-    public Optional<TaskListModel> findById(UUID taskListId){
-        return Optional.ofNullable(taskListRepository.findById(taskListId)
-                .orElseThrow(() -> new ResourceNotFoundException("Não encontramos a Lista de Tarefas informada.")));
+    public TaskListModel findById(UUID taskListId){
+        return taskListRepository.findById(taskListId)
+                .orElseThrow(() -> new ResourceNotFoundException("Não encontramos a Lista de Tarefas informada."));
     }
 
 }
