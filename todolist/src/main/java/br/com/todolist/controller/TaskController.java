@@ -40,7 +40,11 @@ public class TaskController {
     }
 
     @PutMapping
-    List<TaskDTO> update(@Valid @RequestBody TaskModel taskModel){
+    List<TaskDTO> update(@Valid @RequestBody TaskModel taskModel, @RequestParam UUID taskListId){
+        TaskListModel taskListModel = taskListService.findById(taskListId);
+
+        taskModel.setTaskList(taskListModel);
+
         return taskService.updateTask(taskModel);
     }
 
