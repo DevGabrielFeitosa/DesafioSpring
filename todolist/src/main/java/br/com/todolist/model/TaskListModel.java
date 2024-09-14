@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "task_list")
-public class TaskList {
+public class TaskListModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -25,7 +25,7 @@ public class TaskList {
     private Date creationDate;
 
     @OneToMany(mappedBy = "taskList", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Task> tasks;
+    private Set<TaskModel> taskModels;
 
     public String getTitle() {
         return title;
@@ -67,11 +67,11 @@ public class TaskList {
         return id;
     }
 
-    public Set<Task> getTasks() {
-        return tasks;
+    public Set<TaskModel> getTasks() {
+        return taskModels;
     }
 
-    public void setTasks(Set<Task> tasks) {
-        this.tasks = tasks;
+    public void setTasks(Set<TaskModel> taskModels) {
+        this.taskModels = taskModels;
     }
 }

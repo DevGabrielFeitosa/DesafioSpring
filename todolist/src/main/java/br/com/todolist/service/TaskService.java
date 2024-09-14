@@ -1,6 +1,6 @@
 package br.com.todolist.service;
 
-import br.com.todolist.model.Task;
+import br.com.todolist.model.TaskModel;
 import br.com.todolist.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -14,26 +14,26 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
-    public List<Task> createTask(Task task){
-        taskRepository.save(task);
+    public List<TaskModel> createTask(TaskModel taskModel){
+        taskRepository.save(taskModel);
         return findAll();
     }
 
-    public List<Task> findAll(){
+    public List<TaskModel> findAll(){
         return taskRepository.findAll();
     }
 
-    public List<Task> findAllWithOrder(String order){
+    public List<TaskModel> findAllWithOrder(String order){
         return taskRepository.findAll(Sort.by(Sort.Order.asc(order)));
     }
 
-    public List<Task> deleteTask(UUID id){
+    public List<TaskModel> deleteTask(UUID id){
         taskRepository.deleteById(id);
         return findAll();
     }
 
-    public List<Task> updateTask(Task task){
-        taskRepository.save(task);
+    public List<TaskModel> updateTask(TaskModel taskModel){
+        taskRepository.save(taskModel);
         return findAll();
     }
 

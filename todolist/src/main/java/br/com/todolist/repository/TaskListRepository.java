@@ -1,12 +1,12 @@
 package br.com.todolist.repository;
 
-import br.com.todolist.model.TaskList;
+import br.com.todolist.model.TaskListModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface TaskListRepository extends JpaRepository<TaskList, UUID> {
+public interface TaskListRepository extends JpaRepository<TaskListModel, UUID> {
 
-    List<TaskList> findAllByOrderByCreationDateDesc();
+    List<TaskListModel> findAllByOrderByCreationDateDesc();
 }

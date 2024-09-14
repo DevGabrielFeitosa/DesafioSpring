@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tasks")
-public class Task {
+public class TaskModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -24,7 +24,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "task_list_id")
-    private TaskList taskList;
+    private TaskListModel taskListModel;
 
     public String getDescription() {
         return description;
@@ -66,11 +66,11 @@ public class Task {
         return id;
     }
 
-    public TaskList getTaskList() {
-        return taskList;
+    public TaskListModel getTaskList() {
+        return taskListModel;
     }
 
-    public void setTaskList(TaskList taskList) {
-        this.taskList = taskList;
+    public void setTaskList(TaskListModel taskListModel) {
+        this.taskListModel = taskListModel;
     }
 }

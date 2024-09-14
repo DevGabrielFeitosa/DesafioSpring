@@ -1,6 +1,6 @@
 package br.com.todolist.controller;
 
-import br.com.todolist.model.Task;
+import br.com.todolist.model.TaskModel;
 import br.com.todolist.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,27 +15,27 @@ public class TaskController {
     private TaskService taskService;
 
     @PostMapping
-    List<Task> create(@RequestBody Task task){
-        return taskService.createTask(task);
+    List<TaskModel> create(@RequestBody TaskModel taskModel){
+        return taskService.createTask(taskModel);
     }
 
     @GetMapping("/list")
-    List<Task> list(){
+    List<TaskModel> list(){
         return taskService.findAll();
     }
 
     @GetMapping("/list/orderedList")
-    List<Task> listWithOrder(@RequestParam("order") String order){
+    List<TaskModel> listWithOrder(@RequestParam("order") String order){
         return taskService.findAllWithOrder(order);
     }
 
     @PutMapping
-    List<Task> update(@RequestBody Task task){
-        return taskService.updateTask(task);
+    List<TaskModel> update(@RequestBody TaskModel taskModel){
+        return taskService.updateTask(taskModel);
     }
 
     @DeleteMapping("{id}")
-    List<Task> create(@PathVariable("id") UUID id){
+    List<TaskModel> create(@PathVariable("id") UUID id){
         return taskService.deleteTask(id);
     }
 }
