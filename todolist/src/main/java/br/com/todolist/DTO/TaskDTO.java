@@ -1,5 +1,7 @@
 package br.com.todolist.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -7,6 +9,7 @@ public class TaskDTO {
     private UUID id;
     private String description;
     private String priority;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date creationDate;
     private String status;
 
