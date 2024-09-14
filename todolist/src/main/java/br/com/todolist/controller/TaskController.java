@@ -2,6 +2,7 @@ package br.com.todolist.controller;
 
 import br.com.todolist.model.TaskModel;
 import br.com.todolist.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class TaskController {
     private TaskService taskService;
 
     @PostMapping
-    List<TaskModel> create(@RequestBody TaskModel taskModel){
+    List<TaskModel> create(@Valid @RequestBody TaskModel taskModel){
         return taskService.createTask(taskModel);
     }
 
@@ -30,7 +31,7 @@ public class TaskController {
     }
 
     @PutMapping
-    List<TaskModel> update(@RequestBody TaskModel taskModel){
+    List<TaskModel> update(@Valid @RequestBody TaskModel taskModel){
         return taskService.updateTask(taskModel);
     }
 
