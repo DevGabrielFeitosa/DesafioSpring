@@ -1,0 +1,26 @@
+.col-form-label{
+    font-weight: bold;
+}
+
+.container-fluid{
+    background: #C1BEBF;
+    height: 100vh;
+}
+
+#sidebar{
+    width: 550px;
+    margin-top: 10px;
+    border-radius: 15px;
+    padding: 10px;
+    background: #CFCFCF;
+    height: 98vh;
+}
+
+#main-content{
+    margin-left: 45px;
+    margin-top: 10px;
+    border-radius: 15px;
+    padding: 10px;
+    background: #CFCFCF;
+    height: 98vh;
+}
