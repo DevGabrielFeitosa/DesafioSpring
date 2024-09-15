@@ -1,5 +1,6 @@
 package br.com.todolist.controller;
 
+import br.com.todolist.DTO.TaskListDTO;
 import br.com.todolist.model.TaskListModel;
 import br.com.todolist.service.TaskListService;
 import jakarta.validation.Valid;
@@ -18,23 +19,23 @@ public class TaskListController {
     private TaskListService taskListService;
 
     @PostMapping
-    List<TaskListModel> create(@Valid @RequestBody TaskListModel taskListModel){
+    List<TaskListDTO> create(@Valid @RequestBody TaskListModel taskListModel){
         return taskListService.createList(taskListModel);
     }
 
     @GetMapping
-    List<TaskListModel> list(){
+    List<TaskListDTO> list(){
         return taskListService.findAll();
     }
 
     @PutMapping
-    ResponseEntity<List<TaskListModel>> update(@Valid @RequestBody TaskListModel taskListModel){
-        List<TaskListModel> updatedList = taskListService.updateList(taskListModel);
+    ResponseEntity<List<TaskListDTO>> update(@Valid @RequestBody TaskListModel taskListModel){
+        List<TaskListDTO> updatedList = taskListService.updateList(taskListModel);
         return new ResponseEntity<>(updatedList, HttpStatus.OK);
     }
 
     @DeleteMapping()
-    List<TaskListModel> delete(@RequestParam("id")  UUID id){
+    List<TaskListDTO> delete(@RequestParam("id")  UUID id){
         return taskListService.deleteList(id);
     }
 }
