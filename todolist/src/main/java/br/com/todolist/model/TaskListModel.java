@@ -24,6 +24,7 @@ public class TaskListModel {
     @Size(max = 60, message = "Descrição não deve passar de 60 caracteres.")
     private String description;
 
+    @NotBlank(message = "Prioridade não deve ser vazia.")
     private String priority;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

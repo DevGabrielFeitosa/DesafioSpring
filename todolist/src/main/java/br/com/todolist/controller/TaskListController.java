@@ -33,8 +33,8 @@ public class TaskListController {
         return new ResponseEntity<>(updatedList, HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}")
-    List<TaskListModel> delete(@PathVariable("id") UUID id){
+    @DeleteMapping()
+    List<TaskListModel> delete(@RequestParam("id")  UUID id){
         return taskListService.deleteList(id);
     }
 }
