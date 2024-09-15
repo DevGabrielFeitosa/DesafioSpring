@@ -4,6 +4,8 @@ import br.com.todolist.model.TaskListModel;
 import br.com.todolist.service.TaskListService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,8 +28,9 @@ public class TaskListController {
     }
 
     @PutMapping
-    List<TaskListModel> update(@Valid @RequestBody TaskListModel taskListModel){
-        return taskListService.updateList(taskListModel);
+    ResponseEntity<List<TaskListModel>> update(@Valid @RequestBody TaskListModel taskListModel){
+        List<TaskListModel> updatedList = taskListService.updateList(taskListModel);
+        return new ResponseEntity<>(updatedList, HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
