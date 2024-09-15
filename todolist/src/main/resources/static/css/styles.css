@@ -61,15 +61,20 @@
 
 .list-item-container {
     display: flex;
-    flex-direction: column; /* Faz com que os itens fiquem em uma coluna */
-    max-width: 300px; /* Ajuste conforme necessário */
+    flex-direction: column;
+    max-width: 430px;
+    cursor: pointer;
+}
+
+.list-item-container.selected {
+    background-color: #f0f0f0;
 }
 
 .title {
-    font-size: 1.25rem; /* Ajuste o tamanho da fonte conforme necessário */
+    font-size: 1.25rem;
     font-weight: bold;
-    max-width: 100%; /* Permite que o título use o máximo de largura disponível */
-    overflow-wrap: break-word; /* Quebra o texto longo em palavras */
-    margin: 0; /* Remove a margem padrão */
+    max-width: 100%;
+    overflow-wrap: break-word;
+    margin: 0;
 }
 
