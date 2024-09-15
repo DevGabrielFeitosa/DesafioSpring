@@ -233,7 +233,6 @@ public class TaskServiceTest {
         TaskListModel taskListModel = new TaskListModel();
         taskListModel.setId(taskListId);
 
-        // Simulação do serviço para retornar um TaskListModel válido
         when(taskListService.findById(taskListId)).thenReturn(taskListModel);
 
         TaskModel updatedTaskModel = new TaskModel();
