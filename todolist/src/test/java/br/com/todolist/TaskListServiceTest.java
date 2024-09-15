@@ -1,5 +1,6 @@
 package br.com.todolist;
 
+import br.com.todolist.DTO.TaskListDTO;
 import br.com.todolist.controller.TaskListController;
 import br.com.todolist.exceptions.ResourceNotFoundException;
 import br.com.todolist.model.TaskListModel;
@@ -122,14 +123,15 @@ public class TaskListServiceTest {
 
     @Test
     public void shouldReturnAllTasks() throws Exception {
-        TaskListModel task1 = new TaskListModel();
+        // Criar objetos TaskListDTO
+        TaskListDTO task1 = new TaskListDTO();
         task1.setId(UUID.randomUUID());
         task1.setTitle("Task 1");
         task1.setDescription("Description 1");
         task1.setPriority("Medium");
         task1.setCreationDate(new Date());
 
-        TaskListModel task2 = new TaskListModel();
+        TaskListDTO task2 = new TaskListDTO();
         task2.setId(UUID.randomUUID());
         task2.setTitle("Task 2");
         task2.setDescription("Description 2");
@@ -147,26 +149,27 @@ public class TaskListServiceTest {
     @Test
     public void testUpdateSuccess() throws Exception {
         UUID existingId = UUID.randomUUID();
-        TaskListModel existingTask = new TaskListModel();
-        existingTask.setId(existingId);
-        existingTask.setTitle("Original Title");
-        existingTask.setDescription("Original Description");
-        existingTask.setPriority("Low");
-        existingTask.setCreationDate(new Date());
 
-        TaskListModel updateTask = new TaskListModel();
-        updateTask.setId(existingId);
-        updateTask.setTitle("Updated Title");
-        updateTask.setDescription("Updated Description");
-        updateTask.setPriority("High");
-        updateTask.setCreationDate(new Date());
+        TaskListDTO existingTaskDTO = new TaskListDTO();
+        existingTaskDTO.setId(existingId);
+        existingTaskDTO.setTitle("Original Title");
+        existingTaskDTO.setDescription("Original Description");
+        existingTaskDTO.setPriority("Low");
+        existingTaskDTO.setCreationDate(new Date());
+
+        TaskListDTO updatedTaskDTO = new TaskListDTO();
+        updatedTaskDTO.setId(existingId);
+        updatedTaskDTO.setTitle("Updated Title");
+        updatedTaskDTO.setDescription("Updated Description");
+        updatedTaskDTO.setPriority("High");
+        updatedTaskDTO.setCreationDate(new Date());
 
         when(taskListService.updateList(any(TaskListModel.class)))
-                .thenReturn(Collections.singletonList(updateTask));
+                .thenReturn(Collections.singletonList(updatedTaskDTO));
 
         mockMvc.perform(put("/taskList")
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(updateTask)))
+                        .content(objectMapper.writeValueAsString(updatedTaskDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].title").value("Updated Title"))
                 .andExpect(jsonPath("$[0].description").value("Updated Description"))
