@@ -16,6 +16,14 @@
     height: 98vh;
 }
 
+#topbarList{
+    margin-bottom: 30px;
+}
+
+#topbarTask{
+    margin-bottom: 29px;
+}
+
 #main-content{
     margin-left: 45px;
     margin-top: 10px;
@@ -32,18 +40,31 @@
     padding: 10px;
 }
 
-
 .list-group-item div:first-child {
     flex: 1;
     margin-right: 10px;
 }
 
+small{
+    font-weight: bold;
+}
 
 .list-group-item div:last-child {
     display: flex;
     flex-direction: column;
 }
 
+.task {
+    display: block;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.task p {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    margin: 0;
+}
 
 .btn-sm {
     padding: 0.25rem 0.5rem;
@@ -52,7 +73,15 @@
 }
 
 #lists {
-    max-height: 850px;
+    max-height: 800px;
+    overflow-y: auto;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#tasks {
+    max-height: 800px;
     overflow-y: auto;
     list-style-type: none;
     padding: 0;
