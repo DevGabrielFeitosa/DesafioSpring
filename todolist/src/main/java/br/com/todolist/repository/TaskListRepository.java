@@ -8,5 +8,5 @@ import java.util.UUID;
 
 public interface TaskListRepository extends JpaRepository<TaskListModel, UUID> {
 
-    List<TaskListModel> findAllByOrderByCreationDateDesc();
+    List<TaskListModel> findAllByOrderByPriorityAsc();
 }

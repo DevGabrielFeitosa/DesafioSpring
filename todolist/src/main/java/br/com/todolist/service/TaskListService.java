@@ -22,7 +22,7 @@ public class TaskListService {
     }
 
     public List<TaskListModel> findAll(){
-        return taskListRepository.findAllByOrderByCreationDateDesc();
+        return taskListRepository.findAllByOrderByPriorityAsc();
     }
 
     public List<TaskListModel> deleteList(UUID id){
