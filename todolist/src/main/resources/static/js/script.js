@@ -44,7 +44,7 @@ function getTaskLists() {
 
                 result.forEach(item => {
                     const listItem = document.createElement('li');
-                    listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    listItem.className = 'list-group-item d-flex align-items-center';
 
                     listItem.innerHTML = `
                                                     <div class="list-item-container">
@@ -58,6 +58,18 @@ function getTaskLists() {
                                                     </div>
                                                 `;
 
+                    listItem.addEventListener('click', () => {
+                        event.stopPropagation();
+
+                        document.querySelectorAll('.list-item-container').forEach(container => {
+                            container.classList.remove('selected');
+                        });
+
+                        listItem.querySelector('.list-item-container').classList.add('selected');
+
+                        loadTasksForList(`${item.id}`)
+                    });
+
                     list.appendChild(listItem);
                 });
 
@@ -67,6 +79,7 @@ function getTaskLists() {
             }
         },
         error: function (result) {
+            alert("Ocorreu um erro ao tentar listar suas tarefas.")
         }
     });
 }
@@ -123,6 +136,7 @@ function createList() {
                     confirmButtonText: 'Confirmar'
                 })
 
+            cleanModalCreateTask()
             $('#createListModal').modal('hide');
             getTaskLists()
         },
