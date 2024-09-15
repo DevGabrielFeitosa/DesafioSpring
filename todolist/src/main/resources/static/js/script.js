@@ -235,8 +235,6 @@ function editList(){
         "creationDate": formatDateForBackend(creationDate)
     }
 
-    console.log(id)
-
     $.ajax({
         type: "PUT",
         url: `http://localhost:8080/taskList`,
@@ -286,4 +284,42 @@ function cleanModalCreateTask(){
     $('#listTitle').val('')
     $('#listDescription').val('')
     $('#listPriority').val('')
+}
+
+//TASKS
+
+function loadTasksForList(listId) {
+    $.ajax({
+        type: "GET",
+        url: `http://localhost:8080/task/list?id=${listId}`,
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function(result) {
+            document.getElementById('tasks').innerHTML = '';
+
+            if (result.length > 0){
+                result.forEach(task => {
+                    const listItemHTML = `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <h5>${formatDateForFrontend(task.creationDate)}</h5>
+                            <p>${task.description}</p>
+                            <small>Prioridade: ${formatPriorityForFrontend(task.priority)} | Status: ${task.status}</small>
+                            <div>
+                                <button type="button" class="btn btn-warning btn-sm me-2" onclick="">Editar</button>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="">Excluir</button>
+                            </div>
+                    </li>
+                `;
+
+                    document.getElementById('taskListXXL').innerHTML += listItemHTML;
+                });
+            } else {
+                console.log("0 resutaldos.")
+            }
+
+        },
+        error: function(xhr, status, error) {
+            alert("Ocorreu um erro ao tentar listar suas tarefas.")
+        }
+    });
 }
