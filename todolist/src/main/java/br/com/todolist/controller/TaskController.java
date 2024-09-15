@@ -30,8 +30,8 @@ public class TaskController {
     }
 
     @GetMapping("/list")
-    List<TaskDTO> list(){
-        return taskService.findAll();
+    List<TaskDTO> list(@RequestParam("id") UUID id){
+        return taskService.findAllByTaskList(id);
     }
 
     @GetMapping("/list/orderedList")
