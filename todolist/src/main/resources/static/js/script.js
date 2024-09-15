@@ -28,7 +28,6 @@ function formatPriorityForFrontend(priority) {
     return formattedPriorirty;
 }
 
-//Falta o else
 function getTaskLists() {
     $.ajax({
         type: "GET",
@@ -38,8 +37,9 @@ function getTaskLists() {
         processData: false,
         cache: false,
         success: function (result) {
+            const list = document.getElementById('lists');
             if (result.length > 0) {
-                const list = document.getElementById('lists');
+
                 list.innerHTML = '';
 
                 result.forEach(item => {
@@ -62,6 +62,7 @@ function getTaskLists() {
                 });
 
             } else {
+                list.innerHTML = '<li class="list-group-item">Nenhum item disponível.</li>';
 
             }
         },
