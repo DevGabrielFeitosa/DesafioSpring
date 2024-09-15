@@ -313,10 +313,9 @@ function loadTasksForList(listId) {
 
                     document.getElementById('taskListXXL').innerHTML += listItemHTML;
                 });
-            } else {
-                console.log("0 resutaldos.")
             }
 
+            document.getElementById('createNewTask').classList.remove('d-none');
         },
         error: function(xhr, status, error) {
             alert("Ocorreu um erro ao tentar listar suas tarefas.")
