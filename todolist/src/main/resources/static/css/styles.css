@@ -58,3 +58,18 @@
     padding: 0;
     margin: 0;
 }
+
+.list-item-container {
+    display: flex;
+    flex-direction: column; /* Faz com que os itens fiquem em uma coluna */
+    max-width: 300px; /* Ajuste conforme necessário */
+}
+
+.title {
+    font-size: 1.25rem; /* Ajuste o tamanho da fonte conforme necessário */
+    font-weight: bold;
+    max-width: 100%; /* Permite que o título use o máximo de largura disponível */
+    overflow-wrap: break-word; /* Quebra o texto longo em palavras */
+    margin: 0; /* Remove a margem padrão */
+}
+
