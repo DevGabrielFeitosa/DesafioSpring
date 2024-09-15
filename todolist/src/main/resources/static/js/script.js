@@ -44,7 +44,7 @@ function getTaskLists() {
 
                 result.forEach(item => {
                     const listItem = document.createElement('li');
-                    listItem.className = 'list-group-item d-flex align-items-center';
+                    listItem.className = 'list-group-item m-2 d-flex align-items-center';
 
                     listItem.innerHTML = `
                                                     <div class="list-item-container">
@@ -136,7 +136,7 @@ function createList() {
                     confirmButtonText: 'Confirmar'
                 })
 
-            cleanModalCreateTask()
+            cleanModalCreateTaskList()
             $('#createListModal').modal('hide');
             getTaskLists()
         },
@@ -280,7 +280,7 @@ function openModalEdit(id,title,description,priority,creationDate){
     myModal.show()
 }
 
-function cleanModalCreateTask(){
+function cleanModalCreateTaskList(){
     $('#listTitle').val('')
     $('#listDescription').val('')
     $('#listPriority').val('')
@@ -297,28 +297,106 @@ function loadTasksForList(listId) {
         success: function(result) {
             document.getElementById('tasks').innerHTML = '';
 
-            if (result.length > 0){
+            if (result.length > 0) {
                 result.forEach(task => {
                     const listItemHTML = `
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <h5>${formatDateForFrontend(task.creationDate)}</h5>
-                            <p>${task.description}</p>
-                            <small>Prioridade: ${formatPriorityForFrontend(task.priority)} | Status: ${task.status}</small>
-                            <div>
-                                <button type="button" class="btn btn-warning btn-sm me-2" onclick="">Editar</button>
-                                <button type="button" class="btn btn-danger btn-sm" onclick="">Excluir</button>
-                            </div>
-                    </li>
-                `;
-
-                    document.getElementById('taskListXXL').innerHTML += listItemHTML;
+            <li class="list-group-item task m-2" style="width: 98%;">
+                <h5>${formatDateForFrontend(task.creationDate)}</h5>
+                <p>${task.description}</p>
+                <small>Prioridade: ${formatPriorityForFrontend(task.priority)} | Status: ${task.status}</small>
+                <div>
+                    <button type="button" class="btn btn-warning btn-sm me-2" onclick="">Editar</button>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="">Excluir</button>
+                </div>
+            </li>
+            `;
+                    document.getElementById('tasks').innerHTML += listItemHTML;
                 });
             }
 
             document.getElementById('createNewTask').classList.remove('d-none');
+
+            const saveTaskButton = document.getElementById('createTaskButton');
+            saveTaskButton.setAttribute('data-list-id', listId);
         },
         error: function(xhr, status, error) {
             alert("Ocorreu um erro ao tentar listar suas tarefas.")
         }
     });
+}
+
+function createTask() {
+    let listId = document.getElementById('createTaskButton').getAttribute('data-list-id');
+    let status = $('#taskStatus').val()
+    let description = $('#taskDescription').val()
+    let priority = $('#taskPriority').val()
+
+    if (description.trim() == ""){
+        alert("A descrição não pode ser vazia!")
+        return
+    } else if (description.length >200){
+        alert("O título não deve ter mais do que 200 caracteres.")
+        return
+    }
+
+    if (priority == ""){
+        alert("É necessário informar uma prioridade.")
+        return
+    }
+
+    if (status == ""){
+        alert("É necessário informar um status.")
+        return
+    }
+
+    let creationDate = formatDateForBackend(new Date());
+
+    let jsonData = {
+        "status": status,
+        "description": description,
+        "priority": priority,
+        "creationDate": creationDate
+    }
+
+    $.ajax({
+        type: "POST",
+        url: `http://localhost:8080/task?taskListId=${listId}`,
+        dataType: 'json',
+        data: JSON.stringify(jsonData),
+        contentType: 'application/json',
+        processData: false,
+        cache: false,
+        success: function (response) {
+            Swal.fire(
+                {
+                    title: 'Cadastrado!',
+                    text: "A tarefa foi cadastrada com sucesso.",
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3A6332',
+                    confirmButtonText: 'Confirmar'
+                })
+
+            cleanModalCreateTask()
+            $('#createTaskModal').modal('hide');
+            loadTasksForList(listId)
+        },
+        error: function (xhr, status, error) {
+            Swal.fire({
+                    title: 'Erro',
+                    text: "Ocorreu um erro ao tentar criar a tarefa.",
+                    icon: 'error',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3A6332',
+                    confirmButtonText: 'Confirmar'
+                }
+            );
+        }
+    });
+}
+
+function cleanModalCreateTask(){
+    $('#taskStatus').val('')
+    $('#taskDescription').val('')
+    $('#taskPriority').val('')
 }
