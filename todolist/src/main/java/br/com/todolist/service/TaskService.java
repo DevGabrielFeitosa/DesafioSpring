@@ -31,26 +31,42 @@ public class TaskService {
 
     public List<TaskDTO> createTask(TaskModel taskModel){
         taskRepository.save(taskModel);
-        return findAll();
+        return findAllWithOrder("creationDate");
     }
 
-    public List<TaskDTO> findAll() {
-        return taskRepository.findAll()
+    public List<TaskDTO> findAllByTaskList(UUID taskListId) {
+        return taskRepository.findByTaskListModelIdOrderByPriority(taskListId)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<TaskDTO> findAllWithOrder(String order){
-        return taskRepository.findAll(Sort.by(Sort.Order.asc(order)))
-                .stream()
+    public List<TaskDTO> findAllWithOrder(String order) {
+        Sort sort = getSort(order);
+        List<TaskModel> tasks = taskRepository.findAll(sort);
+        return tasks.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    private Sort getSort(String order) {
+        switch (order) {
+            case "priorityAsc":
+                return Sort.by(Sort.Order.asc("priority"));
+            case "priorityDesc":
+                return Sort.by(Sort.Order.desc("priority"));
+            case "dateAsc":
+                return Sort.by(Sort.Order.asc("creationDate"));
+            case "dateDesc":
+                return Sort.by(Sort.Order.desc("creationDate"));
+            default:
+                return Sort.unsorted();
+        }
     }
 
     public List<TaskDTO> deleteTask(UUID id){
         taskRepository.deleteById(id);
-        return findAll();
+        return findAllWithOrder("creationDate");
     }
 
     public List<TaskDTO> updateTask(TaskModel taskModel){
@@ -61,6 +77,7 @@ public class TaskService {
 
             taskToUpdate.setDescription(taskModel.getDescription());
             taskToUpdate.setPriority(taskModel.getPriority());
+            taskToUpdate.setStatus(taskModel.getStatus());
 
             taskRepository.save(taskToUpdate);
 
@@ -68,8 +85,7 @@ public class TaskService {
             throw new ResourceNotFoundException("Não encontramos a Tarefa informada.");
         }
 
-        taskRepository.save(taskModel);
-        return findAll();
+        return findAllWithOrder("creationDate");
     }
 
 }
