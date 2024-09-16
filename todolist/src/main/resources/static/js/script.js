@@ -1,5 +1,8 @@
+let listIdUniversal;
+
 $(document).ready(function () {
     getTaskLists();
+    ordenateTask();
 });
 
 function formatDateForBackend(date) {
@@ -53,7 +56,7 @@ function getTaskLists() {
                                                         <small>Prioridade: ${formatPriorityForFrontend(item.priority)} | Data de Criação: ${formatDateForFrontend(item.creationDate)}</small>
                                                     </div>
                                                     <div>
-                                                        <button type="button" class="btn btn-warning btn-sm me-2" onclick="openModalEdit('${item.id}','${item.title}','${item.description}','${item.priority}')">Editar</button>
+                                                        <button type="button" class="btn btn-warning btn-sm me-2" onclick="openModalEditList('${item.id}','${item.title}','${item.description}','${item.priority}')">Editar</button>
                                                         <button type="button" class="btn btn-danger btn-sm" onclick="deleteList('${item.id}')">Excluir</button>
                                                     </div>
                                                 `;
@@ -262,18 +265,18 @@ function editList(){
     });
 }
 
-function openModalEdit(id,title,description,priority,creationDate){
+function openModalEditList(id,title,description,priority,creationDate){
     $('#editListId').val('')
     $('#editListTitle').val('')
     $('#editListDescription').val('')
     $('#editListPriority').val('')
-    $('#editCreationDate').val('')
+    $('#editListCreationDate').val('')
 
     $('#editListId').val(id)
     $('#editListTitle').val(title)
     $('#editListDescription').val(description)
     $('#editListPriority').val(priority)
-    $('#editCreationDate').val(creationDate)
+    $('#editListCreationDate').val(creationDate)
 
     let myModal = new bootstrap.Modal(document.getElementById('editListModal'));
 
@@ -288,6 +291,26 @@ function cleanModalCreateTaskList(){
 
 //TASKS
 
+function ordenateTask(){
+    const sortSelect = document.getElementById('sortTasks');
+
+    sortSelect.addEventListener('change', function() {
+        const order = this.value;
+        if (order) {
+            fetchTasks(order);
+        }
+    });
+}
+
+function fetchTasks(order) {
+    fetch(`http://localhost:8080/task/list/orderedList?order=${order}`)
+        .then(response => response.json())
+        .then(data => {
+            updateTask(data);
+        })
+        .catch(error => alert('Erro ao buscar tarefas:'));
+}
+
 function loadTasksForList(listId) {
     $.ajax({
         type: "GET",
@@ -298,23 +321,12 @@ function loadTasksForList(listId) {
             document.getElementById('tasks').innerHTML = '';
 
             if (result.length > 0) {
-                result.forEach(task => {
-                    const listItemHTML = `
-            <li class="list-group-item task m-2" style="width: 98%;">
-                <h5>${formatDateForFrontend(task.creationDate)}</h5>
-                <p>${task.description}</p>
-                <small>Prioridade: ${formatPriorityForFrontend(task.priority)} | Status: ${task.status}</small>
-                <div>
-                    <button type="button" class="btn btn-warning btn-sm me-2" onclick="">Editar</button>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="">Excluir</button>
-                </div>
-            </li>
-            `;
-                    document.getElementById('tasks').innerHTML += listItemHTML;
-                });
+                listIdUniversal = listId
+                updateTask(result)
             }
 
             document.getElementById('createNewTask').classList.remove('d-none');
+            document.getElementById('sortTasks').classList.remove('d-none');
 
             const saveTaskButton = document.getElementById('createTaskButton');
             saveTaskButton.setAttribute('data-list-id', listId);
@@ -323,6 +335,28 @@ function loadTasksForList(listId) {
             alert("Ocorreu um erro ao tentar listar suas tarefas.")
         }
     });
+}
+
+function updateTask(tasks) {
+    const tasksContainer = document.getElementById('tasks');
+    tasksContainer.innerHTML = '';
+
+    if (tasks.length > 0) {
+        tasks.forEach(task => {
+            const listItemHTML = `
+                    <li class="list-group-item task m-2" style="width: 98%;">
+                        <h5>${formatDateForFrontend(task.creationDate)}</h5>
+                        <p>${task.description}</p>
+                        <small>Prioridade: ${formatPriorityForFrontend(task.priority)} | Status: ${task.status}</small>
+                        <div>
+                            <button type="button" class="btn btn-warning btn-sm me-2" onclick="openModalEditTask('${task.id}','${task.status}','${task.description}','${task.priority}','${task.creationDate}', '${listIdUniversal}')">Editar</button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteTask('${task.id}','${task.listId}')">Excluir</button>
+                        </div>
+                    </li>
+                `;
+            tasksContainer.innerHTML += listItemHTML;
+        });
+    }
 }
 
 function createTask() {
@@ -399,4 +433,131 @@ function cleanModalCreateTask(){
     $('#taskStatus').val('')
     $('#taskDescription').val('')
     $('#taskPriority').val('')
+}
+
+function editTask(){
+    let id = $('#editTaskId').val();
+    let status = $('#editTaskStatus').val();
+    let description = $('#editTaskDescription').val();
+    let priority = $('#editTaskPriority').val();
+    let listId = $('#taskListId').val();
+
+    if (description.trim() == ""){
+        alert("A descrição não pode ser vazia!")
+        return
+    } else if (description.length >200){
+        alert("O título não deve ter mais do que 200 caracteres.")
+        return
+    }
+
+    if (priority == ""){
+        alert("É necessário informar uma prioridade.")
+        return
+    }
+
+    if (status == ""){
+        alert("É necessário informar um status.")
+        return
+    }
+
+    let jsonEdit = {
+        "id":id,
+        "status": status,
+        "description": description,
+        "priority": priority
+    }
+
+    $.ajax({
+        type: "PUT",
+        url: `http://localhost:8080/task`,
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(jsonEdit),
+        success: function(response) {
+            Swal.fire(
+                {
+                    title: 'Editado!',
+                    text: "A lista foi editada com sucesso.",
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3A6332',
+                    confirmButtonText: 'Confirmar'
+                })
+
+            $('#editTaskModal').modal('hide');
+            loadTasksForList(listId)
+
+        },
+        error: function(xhr, status, error) {
+            alert("Erro ao salvar as alterações.");
+        }
+    });
+}
+
+function openModalEditTask(id,status,description,priority,creationDate,listId){
+    $('#taskListId').val('')
+    $('#editTaskId').val('')
+    $('#editTaskStatus').val('')
+    $('#editTaskDescription').val('')
+    $('#editTaskPriority').val('')
+    $('#editTaskCreationDate').val('')
+console.log(listId)
+    $('#taskListId').val(listId)
+    $('#editTaskId').val(id)
+    $('#editTaskStatus').val(status)
+    $('#editTaskDescription').val(description)
+    $('#editTaskPriority').val(priority)
+    $('#editTaskCreationDate').val(creationDate)
+
+    let myModal = new bootstrap.Modal(document.getElementById('editTaskModal'));
+
+    myModal.show()
+}
+
+function deleteTask(taskId, listId) {
+    Swal.fire({
+        title: 'Tem certeza?',
+        text: "Você não poderá reverter isso!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim, exclua!',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "DELETE",
+                url: `http://localhost:8080/task?id=${taskId}`,
+                dataType: 'json',
+                contentType: 'application/json',
+                processData: false,
+                cache: false,
+                success: function (response) {
+                    Swal.fire(
+                        {
+                            title: 'Deletado!',
+                            text: "A tarefa foi excluída com sucesso.",
+                            icon: 'success',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3A6332',
+                            confirmButtonText: 'Confirmar'
+                        })
+
+                    loadTasksForList(listId)
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                            title: 'Erro',
+                            text: "Ocorreu um erro ao tentar deletar.",
+                            icon: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3A6332',
+                            confirmButtonText: 'Confirmar'
+                        }
+                    );
+                }
+            });
+        }
+    });
 }

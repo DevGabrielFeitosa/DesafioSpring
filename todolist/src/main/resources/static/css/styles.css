@@ -24,6 +24,10 @@
     margin-bottom: 29px;
 }
 
+#sortTasks{
+    width: 20%;
+}
+
 #main-content{
     margin-left: 45px;
     margin-top: 10px;
@@ -93,6 +97,11 @@ small{
     flex-direction: column;
     max-width: 430px;
     cursor: pointer;
+}
+
+.list-item-container p {
+    white-space: normal;
+    overflow-wrap: break-word;
 }
 
 .list-item-container.selected {
