@@ -40,16 +40,12 @@ public class TaskController {
     }
 
     @PutMapping
-    List<TaskDTO> update(@Valid @RequestBody TaskModel taskModel, @RequestParam UUID taskListId){
-        TaskListModel taskListModel = taskListService.findById(taskListId);
-
-        taskModel.setTaskList(taskListModel);
-
+    List<TaskDTO> update(@Valid @RequestBody TaskModel taskModel){
         return taskService.updateTask(taskModel);
     }
 
-    @DeleteMapping("{id}")
-    List<TaskDTO> delete(@PathVariable("id") UUID id){
+    @DeleteMapping()
+    List<TaskDTO> delete(@RequestParam("id") UUID id){
         return taskService.deleteTask(id);
     }
 }
