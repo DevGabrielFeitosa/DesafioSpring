@@ -126,29 +126,46 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void shouldReturnListOfTaks() throws Exception {
-        TaskDTO task1 = new TaskDTO();
+    public void shouldReturnListOfTasks() throws Exception {
+        UUID taskListId = UUID.randomUUID();
+
+        TaskListModel taskListModel = new TaskListModel();
+        taskListModel.setId(taskListId);
+
+        TaskModel task1 = new TaskModel();
+        task1.setId(UUID.randomUUID());
         task1.setDescription("Task 1");
         task1.setPriority("High");
         task1.setCreationDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2024-09-14 15:30:03"));
         task1.setStatus("Open");
+        task1.setTaskList(taskListModel);
 
-        TaskDTO task2 = new TaskDTO();
+        TaskModel task2 = new TaskModel();
+        task2.setId(UUID.randomUUID());
         task2.setDescription("Task 2");
         task2.setPriority("Low");
         task2.setCreationDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2024-09-14 15:30:03"));
         task2.setStatus("Closed");
+        task2.setTaskList(taskListModel);
 
-        when(taskService.findAll()).thenReturn(Arrays.asList(task1, task2));
+        TaskDTO taskDTO1 = new TaskDTO();
+        taskDTO1.setId(task1.getId());
+        taskDTO1.setDescription(task1.getDescription());
+        taskDTO1.setPriority(task1.getPriority());
+        taskDTO1.setCreationDate(task1.getCreationDate());
+        taskDTO1.setStatus(task1.getStatus());
+
+        TaskDTO taskDTO2 = new TaskDTO();
+        taskDTO2.setId(task2.getId());
+        taskDTO2.setDescription(task2.getDescription());
+        taskDTO2.setPriority(task2.getPriority());
+        taskDTO2.setCreationDate(task2.getCreationDate());
+        taskDTO2.setStatus(task2.getStatus());
+
+        when(taskService.findAllByTaskList(taskListId)).thenReturn(Arrays.asList(taskDTO1, taskDTO2));
 
         mockMvc.perform(get("/task/list")
-                        .contentType("application/json"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].description").value("Task 1"))
-                .andExpect(jsonPath("$[1].description").value("Task 2"));
-
-
-        mockMvc.perform(get("/task/list")
+                        .param("id", taskListId.toString()) // Passando o taskListId como parâmetro
                         .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].description").value("Task 1"))
@@ -188,28 +205,52 @@ public class TaskServiceTest {
 
     @Test
     public void shouldDeleteWithSuccess() throws Exception {
-        UUID idTask1 = UUID.randomUUID();
-        UUID idTask2 = UUID.randomUUID();
+        UUID taskListId = UUID.randomUUID();
 
-        TaskDTO task1 = new TaskDTO();
-        task1.setId(idTask1);
+        TaskListModel taskListModel = new TaskListModel();
+        taskListModel.setId(taskListId);
+
+        TaskModel task1 = new TaskModel();
+        task1.setId(UUID.randomUUID());
         task1.setDescription("Task 1");
         task1.setPriority("High");
         task1.setCreationDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2024-09-14 15:30:03"));
         task1.setStatus("Open");
+        task1.setTaskList(taskListModel);
 
-        TaskDTO task2 = new TaskDTO();
-        task2.setId(idTask2);
+        TaskModel task2 = new TaskModel();
+        task2.setId(UUID.randomUUID());
         task2.setDescription("Task 2");
         task2.setPriority("Low");
         task2.setCreationDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2024-09-14 15:30:03"));
         task2.setStatus("Closed");
+        task2.setTaskList(taskListModel);
 
-        when(taskService.findAll()).thenReturn(Arrays.asList(task1, task2));
+        TaskDTO taskDTO1 = new TaskDTO();
+        taskDTO1.setId(task1.getId());
+        taskDTO1.setDescription(task1.getDescription());
+        taskDTO1.setPriority(task1.getPriority());
+        taskDTO1.setCreationDate(task1.getCreationDate());
+        taskDTO1.setStatus(task1.getStatus());
 
-        when(taskService.deleteTask(idTask2)).thenReturn(Arrays.asList(task1));
+        TaskDTO taskDTO2 = new TaskDTO();
+        taskDTO2.setId(task2.getId());
+        taskDTO2.setDescription(task2.getDescription());
+        taskDTO2.setPriority(task2.getPriority());
+        taskDTO2.setCreationDate(task2.getCreationDate());
+        taskDTO2.setStatus(task2.getStatus());
 
-        mockMvc.perform(delete("/task/{id}", idTask2)
+        when(taskService.findAllByTaskList(taskListId)).thenReturn(Arrays.asList(taskDTO1, taskDTO2));
+
+        when(taskService.deleteTask(task2.getId())).thenReturn(Arrays.asList(taskDTO1));
+
+        mockMvc.perform(delete("/task")
+                        .param("id", task2.getId().toString())
+                        .contentType("application/json"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/task/list")
+                        .param("id", taskListId.toString()) // Passa o ID da lista de tarefas
                         .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].description").value("Task 1"));

@@ -123,7 +123,6 @@ public class TaskListServiceTest {
 
     @Test
     public void shouldReturnAllTasks() throws Exception {
-        // Criar objetos TaskListDTO
         TaskListDTO task1 = new TaskListDTO();
         task1.setId(UUID.randomUUID());
         task1.setTitle("Task 1");
